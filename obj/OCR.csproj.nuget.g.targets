@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)tesseract\5.2.0\build\Tesseract.targets" Condition="Exists('$(NuGetPackageRoot)tesseract\5.2.0\build\Tesseract.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.extensions.logging.abstractions\6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.logging.abstractions\6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
+    <Import Project="$(NuGetPackageRoot)ironocr\2024.7.13\buildTransitive\net6.0\IronOcr.targets" Condition="Exists('$(NuGetPackageRoot)ironocr\2024.7.13\buildTransitive\net6.0\IronOcr.targets')" />
+    <Import Project="$(NuGetPackageRoot)ironocr.languages.vietnamese\2020.11.2\build\IronOcr.Languages.Vietnamese.targets" Condition="Exists('$(NuGetPackageRoot)ironocr.languages.vietnamese\2020.11.2\build\IronOcr.Languages.Vietnamese.targets')" />
+    <Import Project="$(NuGetPackageRoot)ironocr.languages.japanese\2024.6.1\build\IronOcr.Languages.Japanese.targets" Condition="Exists('$(NuGetPackageRoot)ironocr.languages.japanese\2024.6.1\build\IronOcr.Languages.Japanese.targets')" />
+    <Import Project="$(NuGetPackageRoot)ironocr.languages.chinese\2024.6.1\build\IronOcr.Languages.Chinese.targets" Condition="Exists('$(NuGetPackageRoot)ironocr.languages.chinese\2024.6.1\build\IronOcr.Languages.Chinese.targets')" />
+  </ImportGroup>
+</Project>
