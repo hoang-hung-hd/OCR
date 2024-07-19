@@ -1,6 +1,7 @@
 ﻿using IronOcr;
 using Microsoft.AspNetCore.Mvc;
 using OCR.Models;
+using Spire.OCR;
 using System.Diagnostics;
 using System.Drawing;
 using Tesseract;
@@ -18,9 +19,11 @@ namespace OCR.Controllers
 
         public IActionResult Index()
         {
-            string imagePath = "D:\\videoSub\\out5Crop.png";
-            string text1 = ConvertToText_IronOcr(imagePath, "eng");
-            string text2 = ConvertToText_Tesseract(imagePath, "eng");
+            string imagePath = "D:\\videoSub\\china2.png";
+            //string text1 = ConvertToText_IronOcr(imagePath, "chi_sim");
+            //string text2 = ConvertToText_Tesseract(imagePath, "chi_sim");
+            //string scannedText = ScanTextFromImage(imagePath);
+
             return View();
         }
 
@@ -30,20 +33,20 @@ namespace OCR.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> getVideoContent(IFormFile video)
+        public async Task<IActionResult> getVideoContent(OCRModel orcModel)
         {
             string originalPath = "";
             string destinationPath = "";
             //bool result = IronOcr.License.IsValidLicense("IRONSUITE.HUNGHV.BIZSYS.VN.5400-5392C5AA3F-EAJJOIFOGN35PU-3L5DWP5YUJTC-OJ4JTECUO3XQ-IZC657H6LISI-2DI3PJ6FWSV3-B57AYDUWI2XR-XCFZTP-TIVM3P7VJNCNEA-DEPLOYMENT.TRIAL-BDXZGH.TRIAL.EXPIRES.17.AUG.2024");
             try
             {
-                if (video != null && video.Length > 0)
+                if (orcModel.videoFile != null && orcModel.videoFile.Length > 0)
                 {
-                    var fileName = Path.GetFileName(video.FileName);
-                    originalPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images", fileName);
+                    var fileName = Path.GetFileName(orcModel.videoFile.FileName);
+                    originalPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\videos", fileName);
                     using (var fileStream = new FileStream(originalPath, FileMode.Create))
                     {
-                        await video.CopyToAsync(fileStream);
+                        await orcModel.videoFile.CopyToAsync(fileStream);
                     }
 
                     destinationPath = "D:\\videoSub\\out%d.png";
@@ -59,7 +62,7 @@ namespace OCR.Controllers
                     {
                         if (sw.BaseStream.CanWrite)
                         {
-                            strCmdText = $"ffmpeg -i {originalPath} -vf fps=1 {destinationPath}";
+                            strCmdText = $"ffmpeg -i {originalPath} -vf \"fps=10\" {destinationPath}";
                             sw.WriteLine(strCmdText);
                         }
                     }
@@ -106,6 +109,9 @@ namespace OCR.Controllers
             {
                 case "vn":
                     IronOcr.Language = OcrLanguage.Vietnamese;
+                    break;
+                case "jpn":
+                    IronOcr.Language = OcrLanguage.Japanese;
                     break;
                 case "chi_sim":
                     IronOcr.Language = OcrLanguage.ChineseSimplified;
@@ -162,6 +168,22 @@ namespace OCR.Controllers
             {
                 return newImagePath;
             }
+        }
+
+
+        public string ScanTextFromImage(string imageFilePath)
+        {
+            //Instantiate an OcrScanner object
+            using (OcrScanner ocrScanner = new OcrScanner())
+            {
+                //Scan text from the image
+                ocrScanner.Scan(imageFilePath);
+                //Get the recognized text from the OcrScanner object
+                IOCRText text = ocrScanner.Text;
+                //Return the text
+                return text.ToString();
+            }
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
